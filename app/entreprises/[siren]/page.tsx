@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ContactForm, DeleteContact } from '../../forms';
+import { PlacesForm } from '../../places-form';
 import { mode, openDb } from '../../../lib/db';
 import type { Contact } from '../../../lib/db';
 import type { Company } from '../../../lib/model';
@@ -52,6 +53,8 @@ export default async function Detail({ params }: { params: Promise<{ siren: stri
             <small><a href={contact.source} target="_blank" rel="noreferrer">Page officielle ↗</a> · Vérifiée le {formatDate(contact.verified)}</small></div>
           <DeleteContact siren={siren} kind={contact.kind} />
         </li>)}</ul> : <p className="muted">Aucune coordonnée disponible.</p>}
+        {c.name && c.commune && <PlacesForm key={siren} siren={siren} demo={demo}
+          configured={Boolean(process.env.GOOGLE_PLACES_API_KEY?.trim())} />}
         <h3>Ajouter ou mettre à jour une coordonnée</h3>
         <ContactForm siren={siren} today={daysAgo(0)} />
       </>}

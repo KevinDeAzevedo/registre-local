@@ -59,3 +59,13 @@ npm run build
 ```
 
 Les tests utilisent des bases temporaires. Ils couvrent deux imports successifs, les six filtres combinés, le tri, la persistance des coordonnées et leur retrait lors d’une diffusion partielle, ainsi que la conservation des fiches lors d’une erreur Sirene simulée. En l’absence de clé, l’authentification, la pagination nationale, les jointures avec les sièges et le comportement face aux réponses réelles de l’Insee restent à valider avec une souscription active.
+
+## Recherche Google Places (facultative)
+
+1. Dans Google Cloud, rattacher un compte de facturation à un projet et activer **Places API (New)**.
+2. Créer une clé d’API, restreindre la clé à **Places API (New)**, puis ajouter `GOOGLE_PLACES_API_KEY` dans `.env.local`. La clé reste côté serveur.
+3. Redémarrer Next.js. En mode Sirene, ouvrir une fiche en diffusion totale qui possède un nom et une commune, puis cliquer sur **Rechercher sur Google Maps**. En mode démo, le même bouton affiche un exemple fictif sans requête externe.
+
+Chaque clic en mode Sirene lance un appel **Text Search Enterprise** et affiche jusqu’à trois établissements candidats avec adresse, téléphone et site, selon les données disponibles. Le nom et la commune publics servent à la recherche. Vérifier l’établissement avant d’utiliser un résultat. Les résultats sont consultables à l’écran et ne sont pas écrits dans SQLite. Pour relever une coordonnée à conserver, vérifier la page officielle de l’entreprise et utiliser le formulaire de saisie. Le clic est indépendant de l’import Sirene.
+
+Google inclut 1 000 appels Text Search Enterprise par mois, puis facture 35 $ US par tranche de 1 000 appels au premier palier. Le quota s’applique au compte de facturation. [Tarifs Google](https://developers.google.com/maps/billing-and-pricing/pricing) · [Règles Google Places](https://developers.google.com/maps/documentation/places/web-service/policies)
