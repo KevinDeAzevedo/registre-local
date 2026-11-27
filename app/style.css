@@ -35,6 +35,17 @@ h1 { margin: 0; font-family: Georgia, serif; font-size: clamp(2.15rem, 5vw, 3.45
 .button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid var(--green); border-radius: 8px; padding: 9px 14px; background: var(--green); color: var(--white); font-size: .88rem; line-height: 1.35; font-weight: 650; text-decoration: none; cursor: pointer; }
 .button:hover { background: var(--dark); }
 .button:disabled, .text-button:disabled { opacity: .65; cursor: wait; }
+.button-spinner {
+  width: 1em;
+  height: 1em;
+  flex: 0 0 auto;
+  border: 2px solid currentColor;
+  border-inline-end-color: transparent;
+  border-radius: 50%;
+  animation: button-spin .7s linear infinite;
+}
+@keyframes button-spin { to { transform: rotate(1turn); } }
+@media (prefers-reduced-motion: reduce) { .button-spinner { animation: none; } }
 .button.outline { white-space: nowrap; background: #f8fbf6; color: var(--green); }
 .button.outline:hover { background: #fff; }
 .panel { background: var(--white); border: 1px solid var(--line); border-radius: 13px; }

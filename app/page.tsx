@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { choices, filterColumns, listCompanies, mode, openDb } from '../lib/db';
 import type { Filters, FilterColumn } from '../lib/db';
 import { activityLabels, formatDate, legalLabels, regions } from '../lib/model';
-import { SyncForm } from './forms';
+import { FilterForm, SyncForm } from './forms';
 
 export const dynamic = 'force-dynamic';
 
@@ -58,7 +58,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Fil
     {status.error && <p className="banner error" role="alert">Dernière tentative échouée. {status.error}</p>}
     <section className="panel filters" aria-labelledby="filtres">
       <h2 id="filtres">Filtres</h2>
-      <form method="get" action="/">
+      <FilterForm>
         <div className="filter-grid">
           <label>Période<select name="days" defaultValue={result.days}>
             <option value="7">7 derniers jours</option><option value="30">30 derniers jours</option>
@@ -73,8 +73,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Fil
             </select></label>;
           })}
         </div>
-        <div className="filter-actions"><button className="button">Appliquer les filtres</button><Link href="/">Réinitialiser</Link></div>
-      </form>
+      </FilterForm>
     </section>
     <section aria-labelledby="resultats">
       <div className="results-head"><h2 id="resultats">{result.total.toLocaleString('fr-FR')} {result.total > 1 ? 'entreprises' : 'entreprise'}</h2>

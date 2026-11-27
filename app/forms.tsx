@@ -1,6 +1,9 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useTransition } from 'react';
+import type { FormEvent, ReactNode } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { contactAction, syncAction } from './actions';
 import type { ActionState } from './actions';
 import { contactKinds } from '../lib/model';
@@ -10,9 +13,38 @@ const initial: ActionState = { message: '', error: false };
 export function SyncForm() {
   const [state, action, pending] = useActionState(syncAction, initial);
   return <form action={action} className="sync-form">
-    <button className="button" disabled={pending}><span aria-hidden="true">↻</span> {pending ? 'Synchronisation en cours…' : 'Synchroniser'}</button>
+    <button className="button" disabled={pending} aria-busy={pending}>
+      {pending ? <span className="button-spinner" aria-hidden="true" /> : <span aria-hidden="true">↻</span>}
+      {pending ? 'Synchronisation en cours…' : 'Synchroniser'}
+    </button>
     {state.error && <p className="error" role="alert">{state.message}</p>}
     {!state.error && state.message && <span className="sr-only" role="status">{state.message}</span>}
+  </form>;
+}
+
+export function FilterForm({ children }: { children: ReactNode }) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+
+  function applyFilters(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (pending) return;
+    const query = new URLSearchParams();
+    for (const [name, value] of new FormData(event.currentTarget)) {
+      if (typeof value === 'string') query.append(name, value);
+    }
+    startTransition(() => router.push('/?' + query.toString()));
+  }
+
+  return <form method="get" action="/" onSubmit={applyFilters}>
+    {children}
+    <div className="filter-actions">
+      <button className="button" disabled={pending} aria-busy={pending}>
+        {pending && <span className="button-spinner" aria-hidden="true" />}
+        {pending ? 'Application des filtres…' : 'Appliquer les filtres'}
+      </button>
+      <Link href="/">Réinitialiser</Link>
+    </div>
   </form>;
 }
 
